@@ -10,12 +10,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from env import TARGET_URL
+from scripts.scraper import Scraper 
+
 
 @dataclass
-class SeleniumScraper:
+class SeleniumScraper(Scraper):
     driver_path: str    # Chromedriver path
 
     def __post_init__(self):
+        logger.info("Initiate Selenium Scraper.")
+        
         # Set driver options
         chrome_options = webdriver.ChromeOptions()
 
@@ -110,6 +114,7 @@ class SeleniumScraper:
         trend_elements = self.find_elements(By.CSS_SELECTOR, 'div.details-top')
         trends = [t.text for t in trend_elements]
         self.driver.quit()
+        logger.info("Selenium done scraping.")
         
         return trends
         
