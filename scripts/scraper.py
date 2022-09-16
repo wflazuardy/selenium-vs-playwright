@@ -9,8 +9,6 @@ class Scraper(ABC):
     Base abstract class for all scraper objects.
     """
     
-    driver_path: str
-    
     @abstractmethod
     def scrape(self) -> List[str]:
         ...
