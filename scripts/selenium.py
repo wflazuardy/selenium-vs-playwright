@@ -8,7 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
 from env import TARGET_URL
 from scripts.scraper import Scraper 
@@ -16,11 +15,9 @@ from scripts.scraper import Scraper
 
 @dataclass
 class SeleniumScraper(Scraper):
+    driver_path: str
+    
     def __post_init__(self):
-         # Download latest chromedriver and get it's path
-        logger.info("Fetch chromedriver...")
-        chromedriver_path = ChromeDriverManager().install()
-        
         logger.info("Initiate Selenium Scraper.")
         # Set driver options
         chrome_options = webdriver.ChromeOptions()
@@ -38,7 +35,7 @@ class SeleniumScraper(Scraper):
         chrome_options.add_argument("--incognito")
         
         # Create web driver object
-        service = Service(chromedriver_path)
+        service = Service(self.driver_path)
         self.driver = webdriver.Chrome(
             service=service,
             options=chrome_options
@@ -116,7 +113,5 @@ class SeleniumScraper(Scraper):
         trend_elements = self.find_elements(By.CSS_SELECTOR, 'div.details-top')
         trends = [t.text for t in trend_elements]
         self.driver.quit()
-        logger.info("Selenium done scraping.")
-        
         return trends
         

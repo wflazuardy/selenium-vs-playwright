@@ -1,13 +1,19 @@
 from loguru import logger
+from webdriver_manager.chrome import ChromeDriverManager
 
 from helper.timer import timer 
 from scripts.selenium import SeleniumScraper
 from scripts.playwright import PlaywrightScraper
 
 
+
 def main() -> None:
+    # Download latest chromedriver and get it's path
+    logger.info("Fetch chromedriver...")
+    chromedriver_path = ChromeDriverManager().install()
+    
     # Run Selenium
-    selenium_scraper = SeleniumScraper()
+    selenium_scraper = SeleniumScraper(chromedriver_path)
     selenium_time = timer(selenium_scraper)
     
     # Run Playwright

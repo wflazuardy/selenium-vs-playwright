@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
+from bs4 import BeautifulSoup as bs
 from loguru import logger
 from playwright.sync_api import sync_playwright
 
@@ -26,8 +27,13 @@ class PlaywrightScraper(Scraper):
             page.goto(TARGET_URL)
             
             # Get all trends
-            trend_elements = page.query_selector_all("div.details-top")
-            trends = [t.inner_text() for t in trend_elements]
+            # trend_elements = page.query_selector_all("div.details-top")
+            # trends = [t.inner_text() for t in trend_elements]
+            
+            soup = bs(page.content(), 'html.parser')
+            trend_elements = soup.select("div.details-top")
+            trends = [t.text.strip() for t in trend_elements]
             driver.close()
+            logger.info("Playwright done scraping.")
             
             return trends
